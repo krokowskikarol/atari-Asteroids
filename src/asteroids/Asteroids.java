@@ -23,9 +23,10 @@ import objects.SpaceShip;
  */
 public class Asteroids extends JComponent implements ActionListener{
 
-    public static SpaceShip ship = new SpaceShip(400, 300,400,350);
+    public static SpaceShip ship = new SpaceShip(400, 300,400,325);
     public int count = 1;
-    public static SpaceShip ship1 = new SpaceShip(300, 300,40,50);
+    public static SpaceShip ship1 = new SpaceShip(400, 300,400,312);
+    public static SpaceShip ship3 = new SpaceShip(400, 300,400,312);
     
 
     /**
@@ -41,11 +42,12 @@ public class Asteroids extends JComponent implements ActionListener{
         window.setVisible(true);
         
     //zainicjowanie i uruchomienie timera
-        Timer t = new Timer(10, game);
+        Timer t = new Timer(100, game);
         t.start();
         
         window.add(ship);
         window.add(ship1);
+         window.add(ship3);
         
     }
 
@@ -56,13 +58,12 @@ public class Asteroids extends JComponent implements ActionListener{
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-        if(count<90){
+        
             ship.turnShip(count);
-            count++;
-        }
-        else{
-            count = 0;
-        }
+            ship1.turnShip(count-120);
+            ship3.turnShip(count+120);
+            count+=15;
+        
         repaint();
     }
 
@@ -75,7 +76,17 @@ public class Asteroids extends JComponent implements ActionListener{
         g2d.fillRect(0, 0, 800, 600);
         
         g2d.setColor(Color.white);
+        //linia centrum
         g2d.drawLine(ship.x, ship.y, ship.x2, ship.y2);
+        // podstawa
+g2d.drawLine(ship1.x, ship1.y,ship1.x2, ship1.y2);
+        g2d.drawLine(ship3.x, ship3.y,ship3.x2, ship3.y2);
+                
+//g2d.drawLine(ship3.x2, ship3.y2, ship1.x2, ship1.y2);
+        //linie boczne
+        g2d.drawLine(ship1.x2, ship1.y2,ship.x2, ship.y2);
+        g2d.drawLine(ship3.x2, ship3.y2,ship.x2, ship.y2);
+        
         
     }
 
