@@ -7,18 +7,26 @@ package asteroids;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 import javax.swing.WindowConstants;
+import objects.SpaceShip;
 
 /**
  *
  * @author kroko
  */
 public class Asteroids extends JComponent implements ActionListener{
+
+    public static SpaceShip ship = new SpaceShip(400, 300,400,350);
+    public int count = 1;
+    public static SpaceShip ship1 = new SpaceShip(300, 300,40,50);
+    
 
     /**
      * @param args the command line arguments
@@ -33,9 +41,12 @@ public class Asteroids extends JComponent implements ActionListener{
         window.setVisible(true);
         
     //zainicjowanie i uruchomienie timera
-        Timer t = new Timer(60, game);
+        Timer t = new Timer(10, game);
         t.start();
-
+        
+        window.add(ship);
+        window.add(ship1);
+        
     }
 
     @Override
@@ -45,7 +56,27 @@ public class Asteroids extends JComponent implements ActionListener{
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if(count<90){
+            ship.turnShip(count);
+            count++;
+        }
+        else{
+            count = 0;
+        }
+        repaint();
+    }
+
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g); //To change body of generated methods, choose Tools | Templates.
+        Graphics2D g2d = (Graphics2D) g;
+
+        g2d.setColor(Color.black);
+        g2d.fillRect(0, 0, 800, 600);
+        
+        g2d.setColor(Color.white);
+        g2d.drawLine(ship.x, ship.y, ship.x2, ship.y2);
+        
     }
 
 }
