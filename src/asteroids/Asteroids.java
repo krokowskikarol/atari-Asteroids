@@ -9,8 +9,11 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.Timer;
@@ -21,13 +24,11 @@ import objects.SpaceShip;
  *
  * @author kroko
  */
-public class Asteroids extends JComponent implements ActionListener{
+public class Asteroids extends JComponent implements ActionListener, KeyListener {
 
-    public static SpaceShip ship = new SpaceShip(400, 300,400,325);
-    public int count = 1;
-    public static SpaceShip ship1 = new SpaceShip(400, 300,400,312);
-    public static SpaceShip ship3 = new SpaceShip(400, 300,400,312);
-    
+    public int count = 0;
+
+    public static SpaceShip shiper = new SpaceShip(new Point(300, 300), new Point(300, 325), new Point(300, 312));
 
     /**
      * @param args the command line arguments
@@ -36,19 +37,18 @@ public class Asteroids extends JComponent implements ActionListener{
         Asteroids game = new Asteroids();
         JFrame window = new JFrame("Asteroids");
         window.add(game);
+            window.addKeyListener(game);
         window.pack();
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         window.setLocationRelativeTo(null);
         window.setVisible(true);
-        
-    //zainicjowanie i uruchomienie timera
-        Timer t = new Timer(100, game);
+
+        //zainicjowanie i uruchomienie timera
+        Timer t = new Timer(50, game);
         t.start();
-        
-        window.add(ship);
-        window.add(ship1);
-         window.add(ship3);
-        
+
+        //window.add(shiper);
+
     }
 
     @Override
@@ -58,12 +58,10 @@ public class Asteroids extends JComponent implements ActionListener{
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-        
-            ship.turnShip(count);
-            ship1.turnShip(count-120);
-            ship3.turnShip(count+120);
-            count+=15;
-        
+
+        shiper.turnShip(count);
+        shiper.showPiontPos();
+        System.out.println(count);
         repaint();
     }
 
@@ -74,20 +72,40 @@ public class Asteroids extends JComponent implements ActionListener{
 
         g2d.setColor(Color.black);
         g2d.fillRect(0, 0, 800, 600);
-        
+
         g2d.setColor(Color.white);
-        //linia centrum
-        g2d.drawLine(ship.x, ship.y, ship.x2, ship.y2);
-        // podstawa
-g2d.drawLine(ship1.x, ship1.y,ship1.x2, ship1.y2);
-        g2d.drawLine(ship3.x, ship3.y,ship3.x2, ship3.y2);
+        //rysowanie statku
+        g2d.drawLine(shiper.center.x, shiper.center.y, shiper.top.x, shiper.top.y);
+        g2d.drawLine(shiper.center.x, shiper.center.y, shiper.left.x, shiper.left.y);
+        g2d.drawLine(shiper.center.x, shiper.center.y, shiper.right.x, shiper.right.y);
+        g2d.drawLine(shiper.top.x, shiper.top.y, shiper.left.x, shiper.left.y);
+        g2d.drawLine(shiper.top.x, shiper.top.y, shiper.right.x, shiper.right.y);
+
+    }
+
+    @Override
+    public void keyTyped(KeyEvent arg0) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent event) {
+        int keyCode = event.getKeyCode();
+        switch (keyCode) {
+            case KeyEvent.VK_RIGHT:
+                this.count = 1;
+                break;
+            case KeyEvent.VK_LEFT:
+                this.count = -1;
+                break;
+            }
                 
-//g2d.drawLine(ship3.x2, ship3.y2, ship1.x2, ship1.y2);
-        //linie boczne
-        g2d.drawLine(ship1.x2, ship1.y2,ship.x2, ship.y2);
-        g2d.drawLine(ship3.x2, ship3.y2,ship.x2, ship.y2);
-        
-        
+        }
+    
+
+    @Override
+    public void keyReleased(KeyEvent event) {
+        count = 0;
     }
 
 }
