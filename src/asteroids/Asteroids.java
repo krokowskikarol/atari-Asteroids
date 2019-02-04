@@ -59,7 +59,7 @@ public class Asteroids extends JComponent implements ActionListener, KeyListener
     public void actionPerformed(ActionEvent arg0) {
 
         shiper.update(dir);
-
+        shiper.checkEdges(this);
         shiper.showPiontPos(shiper.dirVector);
         System.out.println(dir);
         repaint();
