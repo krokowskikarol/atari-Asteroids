@@ -26,7 +26,7 @@ import objects.SpaceShip;
  */
 public class Asteroids extends JComponent implements ActionListener, KeyListener {
 
-    public int count = 0;
+    public int dir = 0;
 
     public static SpaceShip shiper = new SpaceShip(new Point(300, 300), new Point(300, 325), new Point(300, 312));
 
@@ -37,7 +37,7 @@ public class Asteroids extends JComponent implements ActionListener, KeyListener
         Asteroids game = new Asteroids();
         JFrame window = new JFrame("Asteroids");
         window.add(game);
-            window.addKeyListener(game);
+        window.addKeyListener(game);
         window.pack();
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         window.setLocationRelativeTo(null);
@@ -48,7 +48,6 @@ public class Asteroids extends JComponent implements ActionListener, KeyListener
         t.start();
 
         //window.add(shiper);
-
     }
 
     @Override
@@ -59,9 +58,10 @@ public class Asteroids extends JComponent implements ActionListener, KeyListener
     @Override
     public void actionPerformed(ActionEvent arg0) {
 
-        shiper.turnShip(count);
-        shiper.showPiontPos();
-        System.out.println(count);
+        shiper.update(dir);
+
+        shiper.showPiontPos(shiper.dirVector);
+        System.out.println(dir);
         repaint();
     }
 
@@ -93,19 +93,20 @@ public class Asteroids extends JComponent implements ActionListener, KeyListener
         int keyCode = event.getKeyCode();
         switch (keyCode) {
             case KeyEvent.VK_RIGHT:
-                this.count = 1;
+                this.dir = 1;
                 break;
             case KeyEvent.VK_LEFT:
-                this.count = -1;
+                this.dir = -1;
                 break;
-            }
-                
-        }
-    
+            case KeyEvent.VK_UP:
+                shiper.accelerate();
+                break;
+             }
+    }
 
     @Override
     public void keyReleased(KeyEvent event) {
-        count = 0;
+        dir = 0;
     }
 
 }
