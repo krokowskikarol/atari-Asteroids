@@ -51,25 +51,28 @@ public class SpaceShip {
     }
 
     public void accelerate() {
-        this.dirVector.setLocation((top.x-center.x), (top.y-center.y));
+        this.dirVector.setLocation((top.x-center.x)*0.1, (top.y-center.y)*0.1);
         accTime = 0;
         
     }
     public void update(int dir){
          turnShip(dir);
-          if(accTime<maxAccTime/2){
-            move(adjustForce(dirVector,accTime));
-            }
-          else if(accTime<maxAccTime){
-            move(adjustForce(dirVector, accTime));
+          if(accTime<maxAccTime){
+            move(adjustForce());
             }
         accTime ++;
     }
-    private Point adjustForce(Point force, int mod){
-        Point p = new Point(force.x*mod, force.y*mod);
-        
+    private Point adjustForce(){
+        if(accTime < maxAccTime/2){
+        Point p = new Point(dirVector.x*accTime, dirVector.y*accTime);
+        return p;
+        }else{
+        Point p = new Point(dirVector.x*(10-(accTime%10)), dirVector.y*(10-(accTime%10)));
         return p;
     }
+        
+    }
+    
     public void move(Point dir){
         
         top.translate(dir.x, dir.y);
