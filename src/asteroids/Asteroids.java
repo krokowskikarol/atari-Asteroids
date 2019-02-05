@@ -45,7 +45,7 @@ public class Asteroids extends JComponent implements ActionListener, KeyListener
         Timer t = new Timer(50, game);
         t.start();
         //dodanie statku gracza
-        window.add(ship,0);
+        window.add(ship, 0);
     }
 
     @Override
@@ -55,11 +55,10 @@ public class Asteroids extends JComponent implements ActionListener, KeyListener
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-
         ship.update();
         ship.checkEdges(this);
         ship.repaint();
-        
+
         repaint();
     }
 
@@ -70,11 +69,10 @@ public class Asteroids extends JComponent implements ActionListener, KeyListener
 
         g2d.setColor(Color.black);
         g2d.fillRect(0, 0, 800, 600);
-}
+    }
 
     @Override
     public void keyTyped(KeyEvent arg0) {
-
     }
 
     @Override
@@ -82,20 +80,23 @@ public class Asteroids extends JComponent implements ActionListener, KeyListener
         int keyCode = event.getKeyCode();
         switch (keyCode) {
             case KeyEvent.VK_RIGHT:
-ship.setDir(1);                break;
+                ship.setDir(1);
+                break;
             case KeyEvent.VK_LEFT:
-ship.setDir(-1);                break;
-             }
-        if(keyCode == KeyEvent.VK_CONTROL){
-                ship.accelerate();
+                ship.setDir(-1);
+                break;
+        }
+        if (keyCode == KeyEvent.VK_CONTROL) {
+            ship.accelerate();
         }
     }
 
     @Override
     public void keyReleased(KeyEvent event) {
-                int keyCode = event.getKeyCode();
-if(keyCode == KeyEvent.VK_RIGHT|| keyCode ==  KeyEvent.VK_LEFT)
-        ship.setDir(0);
+        int keyCode = event.getKeyCode();
+        if (keyCode == KeyEvent.VK_RIGHT || keyCode == KeyEvent.VK_LEFT) {
+            ship.setDir(0);
+        }
     }
 
 }
