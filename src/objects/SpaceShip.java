@@ -5,6 +5,10 @@
  */
 package objects;
 
+import static asteroids.Asteroids.shiper;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import javax.swing.JComponent;
 
@@ -13,7 +17,7 @@ import javax.swing.JComponent;
  *
  * @author kroko
  */
-public class SpaceShip {
+public class SpaceShip extends JComponent{
 
     public Point center, top, left, right, dirVector;
     public double distance, wingDistance;
@@ -62,6 +66,7 @@ public class SpaceShip {
             accTime++;
         }
 
+        
     }
 
     public void checkEdges(JComponent canvas) {
@@ -102,4 +107,21 @@ public class SpaceShip {
         right.translate(dir.x, dir.y);
     }
 
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g); //To change body of generated methods, choose Tools | Templates.
+    
+                Graphics2D g2d = (Graphics2D) g;
+
+                //rysowanie statku
+        g2d.setColor(Color.white);
+        g2d.drawLine(this.center.x, this.center.y, this.top.x, this.top.y);
+        g2d.drawLine(this.center.x, this.center.y, this.left.x, this.left.y);
+        g2d.drawLine(this.center.x, this.center.y, this.right.x, this.right.y);
+        g2d.drawLine(this.top.x, this.top.y, this.left.x, this.left.y);
+        g2d.drawLine(shiper.top.x, shiper.top.y, shiper.right.x, shiper.right.y);
+
+    }
+
+    
 }

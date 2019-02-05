@@ -47,7 +47,7 @@ public class Asteroids extends JComponent implements ActionListener, KeyListener
         Timer t = new Timer(50, game);
         t.start();
 
-        //window.add(shiper);
+        window.add(shiper,0);
     }
 
     @Override
@@ -61,6 +61,8 @@ public class Asteroids extends JComponent implements ActionListener, KeyListener
         shiper.update(dir);
         shiper.checkEdges(this);
         shiper.showPiontPos(shiper.dirVector);
+        shiper.repaint();
+        
         System.out.println(dir);
         repaint();
     }
@@ -72,16 +74,7 @@ public class Asteroids extends JComponent implements ActionListener, KeyListener
 
         g2d.setColor(Color.black);
         g2d.fillRect(0, 0, 800, 600);
-
-        g2d.setColor(Color.white);
-        //rysowanie statku
-        g2d.drawLine(shiper.center.x, shiper.center.y, shiper.top.x, shiper.top.y);
-        g2d.drawLine(shiper.center.x, shiper.center.y, shiper.left.x, shiper.left.y);
-        g2d.drawLine(shiper.center.x, shiper.center.y, shiper.right.x, shiper.right.y);
-        g2d.drawLine(shiper.top.x, shiper.top.y, shiper.left.x, shiper.left.y);
-        g2d.drawLine(shiper.top.x, shiper.top.y, shiper.right.x, shiper.right.y);
-
-    }
+}
 
     @Override
     public void keyTyped(KeyEvent arg0) {
