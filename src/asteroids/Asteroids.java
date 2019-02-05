@@ -26,9 +26,7 @@ import objects.SpaceShip;
  */
 public class Asteroids extends JComponent implements ActionListener, KeyListener {
 
-    public int dir = 0;
-
-    public static SpaceShip shiper = new SpaceShip(new Point(300, 300), new Point(300, 325), new Point(300, 312));
+    public static SpaceShip ship = new SpaceShip(new Point(300, 300), new Point(300, 325), new Point(300, 312));
 
     /**
      * @param args the command line arguments
@@ -46,8 +44,8 @@ public class Asteroids extends JComponent implements ActionListener, KeyListener
         //zainicjowanie i uruchomienie timera
         Timer t = new Timer(50, game);
         t.start();
-
-        window.add(shiper,0);
+        //dodanie statku gracza
+        window.add(ship,0);
     }
 
     @Override
@@ -58,12 +56,10 @@ public class Asteroids extends JComponent implements ActionListener, KeyListener
     @Override
     public void actionPerformed(ActionEvent arg0) {
 
-        shiper.update(dir);
-        shiper.checkEdges(this);
-        shiper.showPiontPos(shiper.dirVector);
-        shiper.repaint();
+        ship.update();
+        ship.checkEdges(this);
+        ship.repaint();
         
-        System.out.println(dir);
         repaint();
     }
 
@@ -86,20 +82,20 @@ public class Asteroids extends JComponent implements ActionListener, KeyListener
         int keyCode = event.getKeyCode();
         switch (keyCode) {
             case KeyEvent.VK_RIGHT:
-                this.dir = 1;
-                break;
+ship.setDir(1);                break;
             case KeyEvent.VK_LEFT:
-                this.dir = -1;
-                break;
-            case KeyEvent.VK_UP:
-                shiper.accelerate();
-                break;
+ship.setDir(-1);                break;
              }
+        if(keyCode == KeyEvent.VK_CONTROL){
+                ship.accelerate();
+        }
     }
 
     @Override
     public void keyReleased(KeyEvent event) {
-        dir = 0;
+                int keyCode = event.getKeyCode();
+if(keyCode == KeyEvent.VK_RIGHT|| keyCode ==  KeyEvent.VK_LEFT)
+        ship.setDir(0);
     }
 
 }

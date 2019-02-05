@@ -5,12 +5,12 @@
  */
 package objects;
 
-import static asteroids.Asteroids.shiper;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import javax.swing.JComponent;
+import static asteroids.Asteroids.ship;
 
 /**
  * Klasa reprezentujaca Statek gracza
@@ -22,7 +22,12 @@ public class SpaceShip extends JComponent{
     public Point center, top, left, right, dirVector;
     public double distance, wingDistance;
     int accTime, maxAccTime = 20, shipAngle = -90;
-
+    public int dir = 0;
+    public boolean isFlying = false;
+    //arbitralnie wybrany czas po jakim mozna ponownie poruszyc statkiem
+    private final int engineCooldown = 15;
+    
+    
     public SpaceShip(Point center, Point top, Point wing) {
         this.center = center;
         this.top = top;
@@ -54,16 +59,22 @@ public class SpaceShip extends JComponent{
     }
 
     public void accelerate() {
+        if(!isFlying){
         this.dirVector.setLocation((top.x - center.x) * 0.1, (top.y - center.y) * 0.1);
-        accTime = 0;
-
+        this.accTime = 0;
+        isFlying = true;
+    }
     }
 
-    public void update(int dir) {
-        turnShip(dir);
+    public void update() {
+        turnShip(this.dir);
         if (accTime < maxAccTime) {
             move(adjustForce());
             accTime++;
+            // sprawdzamy czy statek zaczal wyhamowywac po poprzednim odpaleniu silnikow
+            if(accTime>engineCooldown){
+                isFlying=false;
+            }
         }
 
         
@@ -71,20 +82,16 @@ public class SpaceShip extends JComponent{
 
     public void checkEdges(JComponent canvas) {
         if (this.center.x < 0) {
-            Point newPos = new Point(canvas.getWidth(), 0);
-            move(newPos);
+            this.move(new Point(canvas.getWidth(), 0));
         }
         if (this.center.x > canvas.getWidth()) {
-            Point newPos = new Point(-canvas.getWidth(), 0);
-            move(newPos);
+            move(new Point(-canvas.getWidth(), 0));
         }
         if (this.center.y < 0) {
-            Point newPos = new Point(0, canvas.getHeight());
-            move(newPos);
+            move(new Point(0, canvas.getHeight()));
         }
         if (this.center.y > canvas.getHeight()) {
-            Point newPos = new Point(0, -canvas.getHeight());
-            move(newPos);
+            move( new Point(0, -canvas.getHeight()));
         }
     }
 
@@ -106,7 +113,14 @@ public class SpaceShip extends JComponent{
         left.translate(dir.x, dir.y);
         right.translate(dir.x, dir.y);
     }
-
+    
+    
+    
+    
+    
+    
+    
+    
     @Override
     public void paint(Graphics g) {
         super.paint(g); //To change body of generated methods, choose Tools | Templates.
@@ -119,8 +133,12 @@ public class SpaceShip extends JComponent{
         g2d.drawLine(this.center.x, this.center.y, this.left.x, this.left.y);
         g2d.drawLine(this.center.x, this.center.y, this.right.x, this.right.y);
         g2d.drawLine(this.top.x, this.top.y, this.left.x, this.left.y);
-        g2d.drawLine(shiper.top.x, shiper.top.y, shiper.right.x, shiper.right.y);
+        g2d.drawLine(ship.top.x, ship.top.y, ship.right.x, ship.right.y);
 
+    }
+
+    public void setDir(int dir) {
+        this.dir = dir;
     }
 
     
