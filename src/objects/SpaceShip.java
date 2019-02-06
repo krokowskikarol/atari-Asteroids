@@ -10,7 +10,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import javax.swing.JComponent;
-import static asteroids.Asteroids.ship;
+import java.util.ArrayList;
 
 /**
  * Klasa reprezentujaca Statek gracza
@@ -19,13 +19,14 @@ import static asteroids.Asteroids.ship;
  */
 public class SpaceShip extends JComponent {
 
-    public Point center, top, left, right, dirVector;
+    public Point center, top, left, right, dirVector, fireVec;
     public double distance, wingDistance;
     int accTime, maxAccTime = 20, shipAngle = -90;
     public int dir = 0;
     public boolean isFlying = false;
     //arbitralnie wybrany czas po jakim mozna ponownie poruszyc statkiem
     private final int engineCooldown = 15;
+    public ArrayList<Bullet> magazine;
 
     public SpaceShip(Point center, Point top, Point wing) {
         this.center = center;
@@ -34,8 +35,12 @@ public class SpaceShip extends JComponent {
         this.right = new Point(wing);
         this.distance = center.distance(top);
         this.wingDistance = center.distance(left);
-        this.dirVector = new Point(0, 0);
+        this.dirVector = new Point();
+        this.dirVector.setLocation(-(top.x - center.x) * 0.1, -(top.y - center.y) * 0.1);
+        this.fireVec = new Point();
         accTime = maxAccTime;
+        this.magazine = new ArrayList<>();
+        magazine.clear();
     }
 
     public void turnShip(int direct) {
@@ -59,7 +64,7 @@ public class SpaceShip extends JComponent {
 
     public void accelerate() {
         if (!isFlying) {
-            this.dirVector.setLocation((top.x - center.x) * 0.1, (top.y - center.y) * 0.1);
+            calculateDirVec();
             this.accTime = 0;
             isFlying = true;
         }
@@ -67,6 +72,7 @@ public class SpaceShip extends JComponent {
 
     public void update() {
         turnShip(this.dir);
+        //update lotu
         if (accTime < maxAccTime) {
             move(adjustForce());
             accTime++;
@@ -75,12 +81,31 @@ public class SpaceShip extends JComponent {
                 isFlying = false;
             }
         }
+        //update pociskow
+        for (Bullet b : magazine) {
+            b.update();
 
+        }
+    }
+
+    private void calculateDirVec() {
+        this.dirVector.setLocation((top.x - center.x) * 0.1, (top.y - center.y) * 0.1);
+    }
+private void calculateFireVec() {
+        this.fireVec.setLocation((top.x - center.x) * 0.3, (top.y - center.y) * 0.3);
+    }
+    public void fire() {
+        if(magazine.size()>10){
+            magazine.remove(0);
+        }
+        calculateFireVec();
+        Bullet e = new Bullet(this.top, 10, this.fireVec);
+        magazine.add(e);
     }
 
     public void checkEdges(JComponent canvas) {
         if (this.center.x < 0) {
-            this.move(new Point(canvas.getWidth(), 0));
+            move(new Point(canvas.getWidth(), 0));
         }
         if (this.center.x > canvas.getWidth()) {
             move(new Point(-canvas.getWidth(), 0));

@@ -19,6 +19,7 @@ import javax.swing.JFrame;
 import javax.swing.Timer;
 import javax.swing.WindowConstants;
 import objects.SpaceShip;
+import objects.Bullet;
 
 /**
  *
@@ -37,6 +38,9 @@ public class Asteroids extends JComponent implements ActionListener, KeyListener
         window.add(game);
         window.addKeyListener(game);
         window.pack();
+
+        //dodanie statku gracza
+        window.add(ship, 0);
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         window.setLocationRelativeTo(null);
         window.setVisible(true);
@@ -44,8 +48,7 @@ public class Asteroids extends JComponent implements ActionListener, KeyListener
         //zainicjowanie i uruchomienie timera
         Timer t = new Timer(50, game);
         t.start();
-        //dodanie statku gracza
-        window.add(ship, 0);
+
     }
 
     @Override
@@ -58,9 +61,10 @@ public class Asteroids extends JComponent implements ActionListener, KeyListener
         ship.update();
         ship.checkEdges(this);
         ship.repaint();
-
         repaint();
-    }
+
+        System.out.println(ship.magazine.size());
+        }
 
     @Override
     public void paint(Graphics g) {
@@ -69,6 +73,12 @@ public class Asteroids extends JComponent implements ActionListener, KeyListener
 
         g2d.setColor(Color.black);
         g2d.fillRect(0, 0, 800, 600);
+
+        for (Bullet b : ship.magazine) {
+
+            g2d.setColor(Color.gray);
+            g2d.fillOval(b.getX(), b.getY(), b.getR(), b.getR());
+        }
     }
 
     @Override
@@ -84,6 +94,9 @@ public class Asteroids extends JComponent implements ActionListener, KeyListener
                 break;
             case KeyEvent.VK_LEFT:
                 ship.setDir(-1);
+                break;
+            case KeyEvent.VK_SPACE:
+                ship.fire();
                 break;
         }
         if (keyCode == KeyEvent.VK_CONTROL) {
