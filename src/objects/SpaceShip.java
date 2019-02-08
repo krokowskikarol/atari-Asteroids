@@ -19,14 +19,14 @@ import java.util.ArrayList;
  */
 public class SpaceShip extends JComponent {
 
-    public Point center, top, left, right, dirVector, fireVec;
-    public double distance, wingDistance;
-    int accTime, maxAccTime = 20, shipAngle = -90;
-    public int dir = 0;
-    public boolean isFlying = false;
+    private Point center, top, left, right, dirVector, fireVec;
+    private double distance, wingDistance;
+    private int dir = 0, shipAngle = -90, magazineSize = 10;
+    private boolean isFlying = false;
     //arbitralnie wybrany czas po jakim mozna ponownie poruszyc statkiem
-    private final int engineCooldown = 15;
+    private int friction = 20;
     public ArrayList<Bullet> magazine;
+    private final int maxSpeed = 20;
 
     public SpaceShip(Point center, Point top, Point wing) {
         this.center = center;
@@ -35,12 +35,14 @@ public class SpaceShip extends JComponent {
         this.right = new Point(wing);
         this.distance = center.distance(top);
         this.wingDistance = center.distance(left);
-        this.dirVector = new Point();
-        this.dirVector.setLocation(-(top.x - center.x) * 0.1, -(top.y - center.y) * 0.1);
+        this.dirVector = new Point(0, 0);
+        //this.dirVector.setLocation(-(top.x - center.x) * 0.1, -(top.y - center.y) * 0.1);
         this.fireVec = new Point();
-        accTime = maxAccTime;
         this.magazine = new ArrayList<>();
-        magazine.clear();
+        for (int i = 0; i < magazineSize; i++) {
+            this.magazine.add(new Bullet(top, 2, fireVec));
+        }
+
     }
 
     public void turnShip(int direct) {
@@ -57,49 +59,50 @@ public class SpaceShip extends JComponent {
         calculatedPoint.move((int) Math.floor(tempx) + this.center.x, (int) Math.floor(tempy) + this.center.y);
     }
 
-    public void showPiontPos(Point v) {
-        System.out.println("left : " + v.getLocation());
-        System.out.println("right : " + v.getLocation());
-    }
-
     public void accelerate() {
         if (!isFlying) {
             calculateDirVec();
-            this.accTime = 0;
             isFlying = true;
         }
     }
 
     public void update() {
         turnShip(this.dir);
-        //update lotu
-        if (accTime < maxAccTime) {
-            move(adjustForce());
-            accTime++;
-            // sprawdzamy czy statek zaczal wyhamowywac po poprzednim odpaleniu silnikow
-            if (accTime > engineCooldown) {
-                isFlying = false;
+
+        adjustAcceleration();
+        move(dirVector);
+
+        //update pociskow
+        magazine.forEach((b) -> {
+            b.update();
+        });
+    }
+
+    private void adjustAcceleration() {
+        if (isFlying && (Math.abs(this.dirVector.getX()) < maxSpeed) && (Math.abs(this.dirVector.getY()) < maxSpeed)) {
+            this.dirVector.translate(Integer.signum((int) this.dirVector.getX()), Integer.signum((int) this.dirVector.getY()));
+        } else if (!isFlying) {
+            if (friction % 5 == 0) {
+                this.dirVector.translate(-Integer.signum((int) this.dirVector.getX()), -Integer.signum((int) this.dirVector.getY()));
             }
         }
-        //update pociskow
-        for (Bullet b : magazine) {
-            b.update();
-
-        }
+        friction--;
     }
 
     private void calculateDirVec() {
         this.dirVector.setLocation((top.x - center.x) * 0.1, (top.y - center.y) * 0.1);
     }
-private void calculateFireVec() {
-        this.fireVec.setLocation((top.x - center.x) * 0.3, (top.y - center.y) * 0.3);
+
+    private void calculateFireVec() {
+        this.fireVec.setLocation((top.x - center.x), (top.y - center.y));
     }
+
     public void fire() {
-        if(magazine.size()>10){
+        if (magazine.size() > magazineSize) {
             magazine.remove(0);
         }
         calculateFireVec();
-        Bullet e = new Bullet(this.top, 10, this.fireVec);
+        Bullet e = new Bullet(this.top, 5, this.fireVec);
         magazine.add(e);
     }
 
@@ -115,16 +118,6 @@ private void calculateFireVec() {
         }
         if (this.center.y > canvas.getHeight()) {
             move(new Point(0, -canvas.getHeight()));
-        }
-    }
-
-    private Point adjustForce() {
-        if (accTime < maxAccTime / 2) {
-            Point p = new Point(dirVector.x * accTime, dirVector.y * accTime);
-            return p;
-        } else {
-            Point p = new Point(dirVector.x * (10 - (accTime % 10)), dirVector.y * (10 - (accTime % 10)));
-            return p;
         }
     }
 
@@ -153,6 +146,10 @@ private void calculateFireVec() {
 
     public void setDir(int dir) {
         this.dir = dir;
+    }
+
+    public void setIsFlying(boolean isFlying) {
+        this.isFlying = isFlying;
     }
 
 }

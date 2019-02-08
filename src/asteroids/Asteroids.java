@@ -60,11 +60,9 @@ public class Asteroids extends JComponent implements ActionListener, KeyListener
     public void actionPerformed(ActionEvent arg0) {
         ship.update();
         ship.checkEdges(this);
-        ship.repaint();
-        repaint();
 
-        System.out.println(ship.magazine.size());
-        }
+        this.repaint();
+    }
 
     @Override
     public void paint(Graphics g) {
@@ -74,11 +72,10 @@ public class Asteroids extends JComponent implements ActionListener, KeyListener
         g2d.setColor(Color.black);
         g2d.fillRect(0, 0, 800, 600);
 
-        for (Bullet b : ship.magazine) {
-
-            g2d.setColor(Color.gray);
+        ship.magazine.forEach((b) -> {
+            g2d.setColor(Color.WHITE);
             g2d.fillOval(b.getX(), b.getY(), b.getR(), b.getR());
-        }
+        });
     }
 
     @Override
@@ -110,6 +107,10 @@ public class Asteroids extends JComponent implements ActionListener, KeyListener
         if (keyCode == KeyEvent.VK_RIGHT || keyCode == KeyEvent.VK_LEFT) {
             ship.setDir(0);
         }
+        if (keyCode == KeyEvent.VK_CONTROL) {
+            ship.setIsFlying(false);
+        }
+
     }
 
 }

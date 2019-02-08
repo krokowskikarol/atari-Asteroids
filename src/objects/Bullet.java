@@ -16,13 +16,13 @@ import javax.swing.JComponent;
  * @author kroko
  */
 public class Bullet extends JComponent{
-private int r;
+private final int r;
 private final Point dirVec,pos;
 
     public Bullet(Point spawn, int r, Point dir) {
-        this.pos = new Point(spawn);
+        this.pos = (Point) spawn.clone();
         this.r = r;
-        this.dirVec = new Point(dir);
+        this.dirVec = (Point) dir.clone();
 
     }
 
@@ -33,7 +33,7 @@ private final Point dirVec,pos;
     @Override
     public void paint(Graphics g) {
         super.paint(g); //To change body of generated methods, choose Tools | Templates.
-    Graphics2D g2d = (Graphics2D) g;
+        Graphics2D g2d = (Graphics2D) g;
 
         //rysowanie pocisku
         g2d.setColor(Color.white);
