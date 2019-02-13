@@ -101,7 +101,7 @@ public class SpaceShip extends JComponent {
             magazine.remove(0);
         }
         calculateFireVec();
-        Bullet e = new Bullet(this.top, 2, this.fireVec);
+        Bullet e = new Bullet(this.center, 2, this.fireVec);
         magazine.add(e);
     }
 

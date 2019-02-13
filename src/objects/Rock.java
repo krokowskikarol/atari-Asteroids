@@ -6,7 +6,6 @@
 package objects;
 
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import javax.swing.JComponent;
@@ -15,7 +14,7 @@ import javax.swing.JComponent;
  *
  * @author kroko
  */
-public class Rock extends JComponent {
+public class Rock {
 
     private final Point center, dirVec;
     private final int radius;
@@ -55,9 +54,15 @@ public class Rock extends JComponent {
     public Point getCenter() {
         return center;
     }
-
+    
     public int getRadius() {
         return radius;
+    }
+public int getX() {
+return (int) this.center.getX();
+}
+public int getY() {
+        return (int) this.center.getY();
     }
 
     public void paintRock(Graphics2D g2d) {

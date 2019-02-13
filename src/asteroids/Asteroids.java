@@ -69,7 +69,8 @@ public class Asteroids extends JComponent implements ActionListener, KeyListener
         ship.update();
         ship.checkEdges(this);
 
-        System.out.println("liczba asteroid : "+ asteroids.size());
+        System.out.println("liczba asteroid : " + asteroids.size());
+        System.out.println("liczba naboi : " + ship.magazine.size());
         this.repaint();
     }
 
@@ -133,24 +134,28 @@ public class Asteroids extends JComponent implements ActionListener, KeyListener
         }
 
     }
-    public void collisionCheck(){
-        for (Bullet bullet : ship.magazine) {
-            for (Rock asteroid : asteroids) {
-                if((bullet.getPos().distance(asteroid.getCenter())<= asteroid.getRadius())){
-                      asteroid.add(new Rock(asteroid.getX(), asteroid.getY(), asteroid.getRadius()/2));
-//                    asteroid.add(new Rock(asteroid.getX(), asteroid.getY(), asteroid.getRadius()/2));
-                   // asteroid.remove(asteroid);
-                    
-                   
-                     asteroids = new ArrayList<>(asteroids);
-                     asteroids.add(new Rock());
-                   asteroids.add(new Rock(0 ,0, 123));
-                   
-                   System.out.println("hit!!!");
+
+    public void collisionCheck() {
+
+        // dla kazdej asteroidy
+        for (int j = asteroids.size() - 1; j > 0; j--) {
+            // sprawdz kazdy pocisk 
+            for (int i = ship.magazine.size() - 1; i > 0; i--) {
+                // czy jego odleglosc od srodka jest mniejsza niż promien asteroidy
+                if ((ship.magazine.get(i).getPos().distance(asteroids.get(j).getCenter()) <= asteroids.get(j).getRadius())) {
+                    //jezeli promien trafionej skaly jest wiekszy od ??? 
+                    if (asteroids.get(j).getRadius() > 10) {
+                        // stworz 2 nowe asteroidy w miejscu w ktorym znajdowala sie trafiona
+                        asteroids.add(new Rock(asteroids.get(j).getX(), asteroids.get(j).getY(), asteroids.get(j).getRadius() / 2));
+                        asteroids.add(new Rock(asteroids.get(j).getX(), asteroids.get(j).getY(), asteroids.get(j).getRadius() / 2));
+                    }
+                    //usun pocisk i trafiona asteroide
+                    ship.magazine.remove(ship.magazine.get(i));
+                    asteroids.remove(j);
                 }
             }
-            
+
         }
-}
-    
+    }
+
 }
