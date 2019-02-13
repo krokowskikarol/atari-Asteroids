@@ -14,14 +14,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 import javax.swing.WindowConstants;
 import objects.SpaceShip;
-import objects.Bullet;
 import objects.Rock;
 
 /**
@@ -65,10 +63,14 @@ public class Asteroids extends JComponent implements ActionListener, KeyListener
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-        collisionCheck();
+        
         ship.update();
+        asteroids.forEach((asteroid) -> {
+            asteroid.update();
+        });
         ship.checkEdges(this);
 
+        collisionCheck();
         System.out.println("liczba asteroid : " + asteroids.size());
         System.out.println("liczba naboi : " + ship.magazine.size());
         this.repaint();
@@ -90,14 +92,15 @@ public class Asteroids extends JComponent implements ActionListener, KeyListener
         });
         // malowanie asteroid
         asteroids.stream().map((asteroid) -> {
-            asteroid.update();
-            return asteroid;
-        }).map((asteroid) -> {
             asteroid.checkEdges(this);
             return asteroid;
         }).forEachOrdered((asteroid) -> {
             asteroid.paintRock(g2d);
         });
+        //rysowanie napisow
+        if(asteroids.size()==0){
+            g2d.drawString("Game Over", 300, 250);
+        }
     }
 
     @Override
@@ -136,13 +139,14 @@ public class Asteroids extends JComponent implements ActionListener, KeyListener
     }
 
     public void collisionCheck() {
-
+          
         // dla kazdej asteroidy
-        for (int j = asteroids.size() - 1; j > 0; j--) {
+        for (int j = asteroids.size() - 1; j >= 0; j--) {
             // sprawdz kazdy pocisk 
-            for (int i = ship.magazine.size() - 1; i > 0; i--) {
-                // czy jego odleglosc od srodka jest mniejsza niż promien asteroidy
-                if ((ship.magazine.get(i).getPos().distance(asteroids.get(j).getCenter()) <= asteroids.get(j).getRadius())) {
+            for (int i = ship.magazine.size() - 1; i >= 0; i--) {
+                
+               // czy jego odleglosc od srodka jest mniejsza niż promien asteroidy
+                if ((ship.magazine.get(i).getPos().distance(asteroids.get(j).getCenter()) < asteroids.get(j).getRadius()+2)) {
                     //jezeli promien trafionej skaly jest wiekszy od ??? 
                     if (asteroids.get(j).getRadius() > 10) {
                         // stworz 2 nowe asteroidy w miejscu w ktorym znajdowala sie trafiona
@@ -152,6 +156,8 @@ public class Asteroids extends JComponent implements ActionListener, KeyListener
                     //usun pocisk i trafiona asteroide
                     ship.magazine.remove(ship.magazine.get(i));
                     asteroids.remove(j);
+                    // wyglada na to ze break zapobiega out of bound exception
+                    break;
                 }
             }
 
