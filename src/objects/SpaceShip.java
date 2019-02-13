@@ -36,13 +36,12 @@ public class SpaceShip extends JComponent {
         this.distance = center.distance(top);
         this.wingDistance = center.distance(left);
         this.dirVector = new Point(0, 0);
-        //this.dirVector.setLocation(-(top.x - center.x) * 0.1, -(top.y - center.y) * 0.1);
         this.fireVec = new Point();
         this.magazine = new ArrayList<>();
-        for (int i = 0; i < magazineSize; i++) {
-            this.magazine.add(new Bullet(top, 2, fireVec));
-        }
-
+//        for (int i = 0; i < magazineSize; i++) {
+//            this.magazine.add(new Bullet(center, 2, fireVec));
+//        }
+        this.magazine.clear();
     }
 
     public void turnShip(int direct) {
@@ -102,7 +101,7 @@ public class SpaceShip extends JComponent {
             magazine.remove(0);
         }
         calculateFireVec();
-        Bullet e = new Bullet(this.top, 5, this.fireVec);
+        Bullet e = new Bullet(this.top, 2, this.fireVec);
         magazine.add(e);
     }
 
@@ -128,12 +127,8 @@ public class SpaceShip extends JComponent {
         right.translate(dir.x, dir.y);
     }
 
-    @Override
-    public void paint(Graphics g) {
-        super.paint(g); //To change body of generated methods, choose Tools | Templates.
-
-        Graphics2D g2d = (Graphics2D) g;
-
+//    @Override
+    public void paintShip(Graphics2D g2d) {
         //rysowanie statku
         g2d.setColor(Color.white);
         g2d.drawLine(this.center.x, this.center.y, this.top.x, this.top.y);

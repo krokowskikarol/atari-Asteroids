@@ -14,12 +14,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 import javax.swing.WindowConstants;
 import objects.SpaceShip;
 import objects.Bullet;
+import objects.Rock;
 
 /**
  *
@@ -28,6 +31,7 @@ import objects.Bullet;
 public class Asteroids extends JComponent implements ActionListener, KeyListener {
 
     public static SpaceShip ship = new SpaceShip(new Point(300, 300), new Point(300, 325), new Point(300, 312));
+    public static ArrayList<Rock> asteroids;
 
     /**
      * @param args the command line arguments
@@ -39,8 +43,11 @@ public class Asteroids extends JComponent implements ActionListener, KeyListener
         window.addKeyListener(game);
         window.pack();
 
-        //dodanie statku gracza
-        window.add(ship, 0);
+        asteroids = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            asteroids.add(new Rock());
+        }
+
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         window.setLocationRelativeTo(null);
         window.setVisible(true);
@@ -58,9 +65,11 @@ public class Asteroids extends JComponent implements ActionListener, KeyListener
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
+        collisionCheck();
         ship.update();
         ship.checkEdges(this);
 
+        System.out.println("liczba asteroid : "+ asteroids.size());
         this.repaint();
     }
 
@@ -69,12 +78,24 @@ public class Asteroids extends JComponent implements ActionListener, KeyListener
         super.paint(g); //To change body of generated methods, choose Tools | Templates.
         Graphics2D g2d = (Graphics2D) g;
 
+        // malowanie tła
         g2d.setColor(Color.black);
         g2d.fillRect(0, 0, 800, 600);
-
-        ship.magazine.forEach((b) -> {
-            g2d.setColor(Color.WHITE);
-            g2d.fillOval(b.getX(), b.getY(), b.getR(), b.getR());
+        // malowanie statku
+        ship.paintShip(g2d);
+        // malowanie pocisków
+        ship.magazine.forEach((var bullet) -> {
+            bullet.paintBullet(g2d);
+        });
+        // malowanie asteroid
+        asteroids.stream().map((asteroid) -> {
+            asteroid.update();
+            return asteroid;
+        }).map((asteroid) -> {
+            asteroid.checkEdges(this);
+            return asteroid;
+        }).forEachOrdered((asteroid) -> {
+            asteroid.paintRock(g2d);
         });
     }
 
@@ -112,5 +133,24 @@ public class Asteroids extends JComponent implements ActionListener, KeyListener
         }
 
     }
-
+    public void collisionCheck(){
+        for (Bullet bullet : ship.magazine) {
+            for (Rock asteroid : asteroids) {
+                if((bullet.getPos().distance(asteroid.getCenter())<= asteroid.getRadius())){
+                      asteroid.add(new Rock(asteroid.getX(), asteroid.getY(), asteroid.getRadius()/2));
+//                    asteroid.add(new Rock(asteroid.getX(), asteroid.getY(), asteroid.getRadius()/2));
+                   // asteroid.remove(asteroid);
+                    
+                   
+                     asteroids = new ArrayList<>(asteroids);
+                     asteroids.add(new Rock());
+                   asteroids.add(new Rock(0 ,0, 123));
+                   
+                   System.out.println("hit!!!");
+                }
+            }
+            
+        }
+}
+    
 }

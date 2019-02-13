@@ -6,16 +6,14 @@
 package objects;
 
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import javax.swing.JComponent;
 
 /**
  *
  * @author kroko
  */
-public class Bullet extends JComponent{
+public class Bullet{
 private final int r;
 private final Point dirVec,pos;
 
@@ -30,23 +28,17 @@ private final Point dirVec,pos;
         pos.translate((int)dirVec.getX(), (int)dirVec.getY());
     }
     
-    @Override
-    public void paint(Graphics g) {
-        super.paint(g); //To change body of generated methods, choose Tools | Templates.
-        Graphics2D g2d = (Graphics2D) g;
-
+    
+    public void paintBullet(Graphics2D g2d) {
         //rysowanie pocisku
         g2d.setColor(Color.white);
         g2d.fillOval((int)this.pos.getX(),(int)this.pos.getY(), r*2, r*2);
-    
     }
 
-@Override
     public int getX() {
         return (int) this.pos.getX();
     }
 
-@Override
     public int getY() {
         return (int) this.pos.getY();
     }
@@ -54,6 +46,11 @@ private final Point dirVec,pos;
     public int getR() {
         return r;
     }
+
+    public Point getPos() {
+        return pos;
+    }
+    
     public void showPos(){
         System.out.println("pos : " + this.pos);
     System.out.println("dir : " + this.dirVec);
