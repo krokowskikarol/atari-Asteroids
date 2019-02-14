@@ -13,9 +13,10 @@ import java.awt.Point;
  *
  * @author kroko
  */
-public class Bullet{
-private final int r;
-private final Point dirVec,pos;
+public class Bullet {
+
+    private final int r;
+    private final Point dirVec, pos;
 
     public Bullet(Point spawn, int r, Point dir) {
         this.pos = (Point) spawn.clone();
@@ -24,15 +25,14 @@ private final Point dirVec,pos;
 
     }
 
-    public void update(){
-        pos.translate((int)dirVec.getX(), (int)dirVec.getY());
+    public void update() {
+        pos.translate((int) dirVec.getX(), (int) dirVec.getY());
     }
-    
-    
+
     public void paintBullet(Graphics2D g2d) {
         //rysowanie pocisku
         g2d.setColor(Color.white);
-        g2d.fillOval((int)this.pos.getX(),(int)this.pos.getY(), r*2, r*2);
+        g2d.fillOval((int) this.pos.getX(), (int) this.pos.getY(), r * 2, r * 2);
     }
 
     public int getX() {
@@ -50,9 +50,9 @@ private final Point dirVec,pos;
     public Point getPos() {
         return pos;
     }
-    
-    public void showPos(){
+
+    public void showPos() {
         System.out.println("pos : " + this.pos);
-    System.out.println("dir : " + this.dirVec);
+        System.out.println("dir : " + this.dirVec);
     }
 }
