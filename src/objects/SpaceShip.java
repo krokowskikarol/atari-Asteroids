@@ -19,36 +19,37 @@ import java.util.ArrayList;
  */
 public class SpaceShip extends JComponent {
 
-    private Point center, top, left, right, dirVector, fireVec;
-    private double distance, wingDistance;
-    private int dir = 0, shipAngle = -90, magazineSize = 10;
+    private final Point center, top, left, right, shieldGenerator, dirVector, fireVec;
+    private final double distance, wingDistance;
+    private final int magazineSize = 10, shieldRadius = 18;
+    private int dir = 0, shipAngle = -90;
     private boolean isFlying = false;
+    private double shields = 100;
     //arbitralnie wybrany czas po jakim mozna ponownie poruszyc statkiem
     private int friction = 20;
     public ArrayList<Bullet> magazine;
     private final int maxSpeed = 20;
 
-    public SpaceShip(Point center, Point top, Point wing) {
+    public SpaceShip(Point center) {
         this.center = center;
-        this.top = top;
-        this.left = wing;
-        this.right = new Point(wing);
-        this.distance = center.distance(top);
-        this.wingDistance = center.distance(left);
+        this.top = new Point((int) center.getX(), (int) center.getY() + 25);
+        this.left = new Point((int) center.getX(), (int) center.getY() + 12);
+        this.right = new Point();
+        this.distance = this.center.distance(this.top);
+        this.wingDistance = this.center.distance(this.left);
+        this.shieldGenerator = new Point();
         this.dirVector = new Point(0, 0);
         this.fireVec = new Point();
         this.magazine = new ArrayList<>();
-//        for (int i = 0; i < magazineSize; i++) {
-//            this.magazine.add(new Bullet(center, 2, fireVec));
-//        }
         this.magazine.clear();
     }
 
     public void turnShip(int direct) {
-        shipAngle += direct * 15;
+        shipAngle += direct * 10;
         calculateTurn(this.shipAngle, top, distance);
         calculateTurn(this.shipAngle - 120, left, wingDistance);
         calculateTurn(this.shipAngle + 120, right, wingDistance);
+        calculateTurn(this.shipAngle, this.shieldGenerator, distance / 3);
     }
 
     private void calculateTurn(int angle, Point calculatedPoint, double distance) {
@@ -70,11 +71,17 @@ public class SpaceShip extends JComponent {
 
         adjustAcceleration();
         move(dirVector);
-
+        rechargeShields();
         //update pociskow
         magazine.forEach((b) -> {
             b.update();
         });
+    }
+
+    private void rechargeShields() {
+        if (shields <= 100) {
+            shields += 0.2;
+        }
     }
 
     private void adjustAcceleration() {
@@ -125,10 +132,13 @@ public class SpaceShip extends JComponent {
         center.translate(dir.x, dir.y);
         left.translate(dir.x, dir.y);
         right.translate(dir.x, dir.y);
+        shieldGenerator.translate(dir.x, dir.y);
     }
 
-//    @Override
     public void paintShip(Graphics2D g2d) {
+        g2d.setColor(Color.BLUE);
+        g2d.drawOval(shieldGenerator.x - shieldRadius, shieldGenerator.y - shieldRadius, shieldRadius * 2, shieldRadius * 2);
+
         //rysowanie statku
         g2d.setColor(Color.white);
         g2d.drawLine(this.center.x, this.center.y, this.top.x, this.top.y);
@@ -137,10 +147,20 @@ public class SpaceShip extends JComponent {
         g2d.drawLine(this.top.x, this.top.y, this.left.x, this.left.y);
         g2d.drawLine(this.top.x, this.top.y, this.right.x, this.right.y);
 
+        g2d.setColor(Color.BLUE);
+        g2d.fillRect(30, 30, (int) shields * 2, 20);
     }
 
     public void setDir(int dir) {
         this.dir = dir;
+    }
+
+    public void checkForCollision(ArrayList<Rock> rocks) {
+        for (Rock rock : rocks) {
+            if (rock.getCenter().distance(shieldGenerator) < rock.getRadius() + shieldRadius) {
+                this.shields -= 5;
+            }
+        }
     }
 
     public void setIsFlying(boolean isFlying) {

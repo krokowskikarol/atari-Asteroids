@@ -54,14 +54,16 @@ public class Rock {
     public Point getCenter() {
         return center;
     }
-    
+
     public int getRadius() {
         return radius;
     }
-public int getX() {
-return (int) this.center.getX();
-}
-public int getY() {
+
+    public int getX() {
+        return (int) this.center.getX();
+    }
+
+    public int getY() {
         return (int) this.center.getY();
     }
 

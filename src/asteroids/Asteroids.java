@@ -28,7 +28,7 @@ import objects.Rock;
  */
 public class Asteroids extends JComponent implements ActionListener, KeyListener {
 
-    public static SpaceShip ship = new SpaceShip(new Point(300, 300), new Point(300, 325), new Point(300, 312));
+    public static SpaceShip ship = new SpaceShip(new Point(300, 300));
     public static ArrayList<Rock> asteroids;
 
     /**
@@ -63,11 +63,12 @@ public class Asteroids extends JComponent implements ActionListener, KeyListener
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-        
+
         ship.update();
         asteroids.forEach((asteroid) -> {
             asteroid.update();
         });
+        ship.checkForCollision(asteroids);
         ship.checkEdges(this);
 
         collisionCheck();
@@ -98,7 +99,7 @@ public class Asteroids extends JComponent implements ActionListener, KeyListener
             asteroid.paintRock(g2d);
         });
         //rysowanie napisow
-        if(asteroids.size()==0){
+        if (asteroids.size() == 0) {
             g2d.drawString("Game Over", 300, 250);
         }
     }
@@ -139,14 +140,14 @@ public class Asteroids extends JComponent implements ActionListener, KeyListener
     }
 
     public void collisionCheck() {
-          
+
         // dla kazdej asteroidy
         for (int j = asteroids.size() - 1; j >= 0; j--) {
             // sprawdz kazdy pocisk 
             for (int i = ship.magazine.size() - 1; i >= 0; i--) {
-                
-               // czy jego odleglosc od srodka jest mniejsza niż promien asteroidy
-                if ((ship.magazine.get(i).getPos().distance(asteroids.get(j).getCenter()) < asteroids.get(j).getRadius()+2)) {
+
+                // czy jego odleglosc od srodka jest mniejsza niż promien asteroidy
+                if ((ship.magazine.get(i).getPos().distance(asteroids.get(j).getCenter()) < asteroids.get(j).getRadius() + 2)) {
                     //jezeli promien trafionej skaly jest wiekszy od ??? 
                     if (asteroids.get(j).getRadius() > 10) {
                         // stworz 2 nowe asteroidy w miejscu w ktorym znajdowala sie trafiona
